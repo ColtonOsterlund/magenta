@@ -50,6 +50,11 @@ MAESTRO_TFRECORD_PATHS = {
 }
 # pylint: enable=line-too-long
 
+POLYPHIA_TFRECORD_PATHS = {
+    'train': '../MIDI/Dataset/Preprocessed/NoteSequences/consolidated_v1.tfrecord',
+    'dev': '../MIDI/Dataset/Preprocessed/NoteSequences/consolidated_v1.tfrecord',
+    'test': '../MIDI/Dataset/Preprocessed/NoteSequences/consolidated_v1.tfrecord'
+}
 
 # Beam input transform for MAESTRO dataset.
 def _maestro_input_transform():
@@ -58,6 +63,11 @@ def _maestro_input_transform():
       (split_name, datagen_beam.ReadNoteSequencesFromTFRecord(tfrecord_path))
       for split_name, tfrecord_path in MAESTRO_TFRECORD_PATHS.items())
 
+def _polyphia_input_transform():
+  from magenta.models.score2perf import datagen_beam  # pylint: disable=g-import-not-at-top,import-outside-toplevel
+  return dict(
+      (split_name, datagen_beam.ReadNoteSequencesFromTFRecord(tfrecord_path))
+      for split_name, tfrecord_path in POLYPHIA_TFRECORD_PATHS.items())
 
 class Score2PerfProblem(problem.Problem):
   """Base class for musical score-to-performance problems.
@@ -550,6 +560,49 @@ class Score2PerfMaestroLanguageUncroppedAug(Score2PerfProblem):
   def performances_input_transform(self, tmp_dir):
     del tmp_dir
     return _maestro_input_transform()
+
+  @property
+  def splits(self):
+    return None
+
+  @property
+  def min_hop_size_seconds(self):
+    return 0.0
+
+  @property
+  def max_hop_size_seconds(self):
+    return 0.0
+
+  @property
+  def add_eos_symbol(self):
+    return False
+
+  @property
+  def stretch_factors(self):
+    # Stretch by -5%, -2.5%, 0%, 2.5%, and 5%.
+    return [0.95, 0.975, 1.0, 1.025, 1.05]
+
+  @property
+  def transpose_amounts(self):
+    # Transpose no more than a minor third.
+    return [-3, -2, -1, 0, 1, 2, 3]
+
+  @property
+  def random_crop_in_train(self):
+    return True
+
+  @property
+  def split_in_eval(self):
+    return True
+
+  
+@registry.register_problem('score2perf_maestro_language_uncropped_aug_polyphia')
+class Score2PerfMaestroLanguageUncroppedAugPolyphia(Score2PerfProblem):
+  """Piano performance language model on the MAESTRO dataset fine tuned using transfer learning on the Polyphia dataset."""
+
+  def performances_input_transform(self, tmp_dir):
+    del tmp_dir
+    return _polyphia_input_transform()
 
   @property
   def splits(self):
