@@ -51,9 +51,9 @@ MAESTRO_TFRECORD_PATHS = {
 # pylint: enable=line-too-long
 
 POLYPHIA_TFRECORD_PATHS = {
-    'train': '../MIDI/Dataset/Preprocessed/NoteSequences/consolidated_v1.tfrecord',
-    'dev': '../MIDI/Dataset/Preprocessed/NoteSequences/consolidated_v1.tfrecord',
-    'test': '../MIDI/Dataset/Preprocessed/NoteSequences/consolidated_v1.tfrecord'
+    'train': '../Preprocessed/NoteSequences/consolidated_v1.tfrecord',
+    'dev': '../Preprocessed/NoteSequences/consolidated_v1.tfrecord',
+    'test': '../Preprocessed/NoteSequences/consolidated_v1.tfrecord'
 }
 
 # Beam input transform for MAESTRO dataset.
