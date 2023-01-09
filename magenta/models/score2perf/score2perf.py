@@ -51,9 +51,9 @@ MAESTRO_TFRECORD_PATHS = {
 # pylint: enable=line-too-long
 
 POLYPHIA_TFRECORD_UNCONDITIONED_PATHS = {
-    'train': '../Preprocessed/NoteSequences/consolidated_v1.tfrecord',
-    'dev': '../Preprocessed/NoteSequences/consolidated_v1.tfrecord',
-    'test': '../Preprocessed/NoteSequences/consolidated_v1.tfrecord'
+    'train': '../Preprocessed/NoteSequences/unconditioned_v1.tfrecord',
+    'dev': '../Preprocessed/NoteSequences/unconditioned_v1.tfrecord',
+    'test': '../Preprocessed/NoteSequences/unconditioned_v1.tfrecord'
 }
 
 # Beam input transform for MAESTRO dataset.
