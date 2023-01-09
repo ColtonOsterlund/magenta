@@ -50,7 +50,7 @@ MAESTRO_TFRECORD_PATHS = {
 }
 # pylint: enable=line-too-long
 
-POLYPHIA_TFRECORD_PATHS = {
+POLYPHIA_TFRECORD_UNCONDITIONED_PATHS = {
     'train': '../Preprocessed/NoteSequences/consolidated_v1.tfrecord',
     'dev': '../Preprocessed/NoteSequences/consolidated_v1.tfrecord',
     'test': '../Preprocessed/NoteSequences/consolidated_v1.tfrecord'
@@ -63,11 +63,11 @@ def _maestro_input_transform():
       (split_name, datagen_beam.ReadNoteSequencesFromTFRecord(tfrecord_path))
       for split_name, tfrecord_path in MAESTRO_TFRECORD_PATHS.items())
 
-def _polyphia_input_transform():
+def _polyphia_unconditioned_input_transform():
   from magenta.models.score2perf import datagen_beam  # pylint: disable=g-import-not-at-top,import-outside-toplevel
   return dict(
       (split_name, datagen_beam.ReadNoteSequencesFromTFRecord(tfrecord_path))
-      for split_name, tfrecord_path in POLYPHIA_TFRECORD_PATHS.items())
+      for split_name, tfrecord_path in POLYPHIA_TFRECORD_UNCONDITIONED_PATHS.items())
 
 class Score2PerfProblem(problem.Problem):
   """Base class for musical score-to-performance problems.
@@ -602,7 +602,7 @@ class Score2PerfMaestroLanguageUncroppedAugPolyphia(Score2PerfProblem):
 
   def performances_input_transform(self, tmp_dir):
     del tmp_dir
-    return _polyphia_input_transform()
+    return _polyphia_unconditioned_input_transform()
 
   @property
   def splits(self):
