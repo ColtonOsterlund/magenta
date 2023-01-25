@@ -150,6 +150,7 @@ def convert_midi(root_dir, sub_dir, full_file_path):
   sequence.id = generate_note_sequence_id(
       sequence.filename, sequence.collection_name, 'midi')
   tf.logging.info('Converted MIDI file %s.', full_file_path)
+
   return sequence
 
 

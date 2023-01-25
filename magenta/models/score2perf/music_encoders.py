@@ -34,7 +34,7 @@ class MidiPerformanceEncoder(object):
   """Convert between performance event indices and (filenames of) MIDI files."""
 
   def __init__(self, steps_per_second, num_velocity_bins, min_pitch, max_pitch,
-               add_eos=False, ngrams=None):
+               add_eos=False, ngrams=None, is_ctrl_changes=False):
     """Initialize a MidiPerformanceEncoder object.
 
     Encodes MIDI using a performance event encoding. Index 0 is unused as it is
@@ -69,6 +69,7 @@ class MidiPerformanceEncoder(object):
     self._num_velocity_bins = num_velocity_bins
     self._add_eos = add_eos
     self._ngrams = ngrams or []
+    self.is_ctrl_changes = is_ctrl_changes
 
     for ngram in self._ngrams:
       if len(ngram) < 2:
@@ -80,7 +81,8 @@ class MidiPerformanceEncoder(object):
         num_velocity_bins=num_velocity_bins,
         max_shift_steps=steps_per_second,
         min_pitch=min_pitch,
-        max_pitch=max_pitch)
+        max_pitch=max_pitch,
+        is_ctrl_changes=self.is_ctrl_changes)
 
     # Create a trie mapping n-grams to new indices.
     ngram_ids = range(self.unigram_vocab_size,
@@ -104,9 +106,11 @@ class MidiPerformanceEncoder(object):
     Returns:
       ids: List of performance event indices.
     """
+
     performance = note_seq.Performance(
         note_seq.quantize_note_sequence_absolute(ns, self._steps_per_second),
-        num_velocity_bins=self._num_velocity_bins)
+        num_velocity_bins=self._num_velocity_bins,
+        is_ctrl_changes=self.is_ctrl_changes)
 
     event_ids = [self._encoding.encode_event(event) + self.num_reserved_ids
                  for event in performance]
@@ -143,6 +147,7 @@ class MidiPerformanceEncoder(object):
       ns = note_seq.midi_file_to_sequence_proto(s)
     else:
       ns = note_seq.NoteSequence()
+
     return self.encode_note_sequence(ns)
 
   def decode_to_note_sequence(self, ids, strip_extraneous=False):
@@ -169,11 +174,12 @@ class MidiPerformanceEncoder(object):
     performance = note_seq.Performance(
         quantized_sequence=None,
         steps_per_second=self._steps_per_second,
-        num_velocity_bins=self._num_velocity_bins)
+        num_velocity_bins=self._num_velocity_bins,
+        is_ctrl_changes=self.is_ctrl_changes)
     for i in event_ids:
       performance.append(self._encoding.decode_event(i - self.num_reserved_ids))
 
-    ns = performance.to_sequence()
+    ns = performance.to_sequence(is_ctrl_changes=self.is_ctrl_changes)
 
     return ns
 

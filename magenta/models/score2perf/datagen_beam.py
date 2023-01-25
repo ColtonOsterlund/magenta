@@ -170,9 +170,9 @@ class ExtractExamplesDoFn(beam.DoFn):
     # Apply sustain pedal.
     ns = sequences_lib.apply_sustain_control_changes(ns)
 
-    # Remove control changes as there are potentially a lot of them and they are
-    # no longer needed.
-    del ns.control_changes[:]
+    # # Remove control changes as there are potentially a lot of them and they are
+    # # no longer needed.
+    # del ns.control_changes[:]
 
     if (self._min_hop_size_seconds and
         ns.total_time < self._min_hop_size_seconds):
@@ -278,6 +278,7 @@ class ExtractExamplesDoFn(beam.DoFn):
             score_notes.append(note)
         del score_sequence.notes[:]
         score_sequence.notes.extend(score_notes)
+
 
         # Remove key signatures and beat/chord annotations from performance.
         del performance_sequence.key_signatures[:]

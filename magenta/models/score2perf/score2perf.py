@@ -208,7 +208,8 @@ class Score2PerfProblem(problem.Problem):
         num_velocity_bins=NUM_VELOCITY_BINS,
         min_pitch=MIN_PITCH,
         max_pitch=MAX_PITCH,
-        add_eos=self.add_eos_symbol)
+        add_eos=self.add_eos_symbol,
+        is_ctrl_changes=True)
 
   def score_encoders(self):
     """List of (name, encoder) tuples for input score components."""
