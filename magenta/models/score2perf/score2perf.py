@@ -209,7 +209,7 @@ class Score2PerfProblem(problem.Problem):
         min_pitch=MIN_PITCH,
         max_pitch=MAX_PITCH,
         add_eos=self.add_eos_symbol,
-        is_ctrl_changes=True)
+        is_ctrl_changes=False)
 
   def score_encoders(self):
     """List of (name, encoder) tuples for input score components."""

@@ -279,6 +279,38 @@ class ExtractExamplesDoFn(beam.DoFn):
         del score_sequence.notes[:]
         score_sequence.notes.extend(score_notes)
 
+        # Remove melody CCs from performance.
+        performance_ccs = []
+        for cc in performance_sequence.control_changes:
+          if cc.instrument != melody_instrument:
+            performance_ccs.append(cc)
+        del performance_sequence.control_changes[:]
+        performance_sequence.control_changes.extend(performance_ccs)
+
+        # Remove non-melody CCs from score.
+        score_ccs = []
+        for cc in score_sequence.control_changes:
+          if cc.instrument == melody_instrument:
+            score_ccs.append(cc)
+        del score_sequence.control_changes[:]
+        score_sequence.control_changes.extend(score_ccs)
+
+        # Remove melody pitchbends from performance.
+        performance_pitchbends = []
+        for pitchbend in performance_sequence.pitch_bends:
+          if pitchbend.instrument != melody_instrument:
+            performance_pitchbends.append(pitchbend)
+        del performance_sequence.pitch_bends[:]
+        performance_sequence.pitch_bends.extend(performance_pitchbends)
+
+        # Remove non-melody pitchbends from score.
+        score_pitchbends = []
+        for pitchbend in score_sequence.pitch_bends:
+          if pitchbend.instrument == melody_instrument:
+            score_pitchbends.append(pitchbend)
+        del score_sequence.pitch_bends[:]
+        score_sequence.pitch_bends.extend(score_pitchbends)
+
 
         # Remove key signatures and beat/chord annotations from performance.
         del performance_sequence.key_signatures[:]
